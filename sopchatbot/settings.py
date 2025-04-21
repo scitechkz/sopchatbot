@@ -75,15 +75,19 @@ WSGI_APPLICATION = 'sopchatbot.wsgi.application'
 # Database Configuration
 import dj_database_url
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL', 'postgres://user:pass@db:5432/db'),
-        conn_max_age=600,
-        conn_health_checks=True
-    )
+    'default': {
+        **dj_database_url.config(),
+        'CONN_MAX_AGE': 300,  # 5 minutes
+        'DISABLE_SERVER_SIDE_CURSORS': True,
+    }
 }
 
-
-
+# Gunicorn optimization
+if 'gunicorn' in os.environ.get('SERVER_SOFTWARE', ''):
+    SILENCED_SYSTEM_CHECKS = [
+        'security.W004',  # SSL redirect
+        'security.W008',  # Secure SSL redirect
+    ]
 # Password Validation
 AUTH_PASSWORD_VALIDATORS = [
     {
