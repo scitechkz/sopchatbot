@@ -5,6 +5,16 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# OpenAI Client Initialization
+
+import openai
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+openai_client = None
+if OPENAI_API_KEY:
+    openai_client = openai.Client(api_key=OPENAI_API_KEY)
+    
+    #end of open AI configuration
+    
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -65,9 +75,12 @@ WSGI_APPLICATION = 'sopchatbot.wsgi.application'
 # Database Configuration
 import dj_database_url
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'postgres://user:pass@db:5432/db'),
+        conn_max_age=600,
+        conn_health_checks=True
+    )
 }
-
 
 
 
@@ -108,7 +121,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom User Model
 AUTH_USER_MODEL = "sop.CustomUser"
 
-# OpenAI Client Initialization
-import openai
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-openai_client = openai.Client(api_key=OPENAI_API_KEY)
+# Skip collectstatic if DISABLE_COLLECTSTATIC is set
+if os.getenv('DISABLE_COLLECTSTATIC'):
+    STATICFILES_DIRS = []
