@@ -7,12 +7,8 @@ load_dotenv()
 
 # OpenAI Client Initialization
 
-import openai
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-openai_client = None
-if OPENAI_API_KEY:
-    openai_client = openai.Client(api_key=OPENAI_API_KEY)
-    
+# OpenAI Client Initialization
+
     #end of open AI configuration
     
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -75,19 +71,10 @@ WSGI_APPLICATION = 'sopchatbot.wsgi.application'
 # Database Configuration
 import dj_database_url
 DATABASES = {
-    'default': {
-        **dj_database_url.config(),
-        'CONN_MAX_AGE': 300,  # 5 minutes
-        'DISABLE_SERVER_SIDE_CURSORS': True,
-    }
+    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
 }
 
-# Gunicorn optimization
-if 'gunicorn' in os.environ.get('SERVER_SOFTWARE', ''):
-    SILENCED_SYSTEM_CHECKS = [
-        'security.W004',  # SSL redirect
-        'security.W008',  # Secure SSL redirect
-    ]
+
 # Password Validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -128,3 +115,7 @@ AUTH_USER_MODEL = "sop.CustomUser"
 # Skip collectstatic if DISABLE_COLLECTSTATIC is set
 if os.getenv('DISABLE_COLLECTSTATIC'):
     STATICFILES_DIRS = []
+    
+import openai
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+openai_client = openai.Client(api_key=OPENAI_API_KEY)

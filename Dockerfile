@@ -1,36 +1,20 @@
-FROM python:3.11-slim
+# Use an official Python runtime as a base image
+FROM python:3.11
 
-# Install essential build dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
+# Set the working directory
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Copy project files to the container
+COPY . /app/
 
-COPY . .
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Create non-root user
-RUN useradd -m appuser && chown -R appuser:appuser /app
-USER appuser
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
-# Healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-    CMD curl -f http://localhost:$PORT/ || exit 1
+# Expose port 8000 for Django
+EXPOSE 8000
 
-# Start command optimized for Render
-CMD gunicorn \
-    --bind 0.0.0.0:$PORT \
-    --workers ${WEB_CONCURRENCY:-2} \  # Reduced for memory
-    --threads ${GUNICORN_THREADS:-2} \
-    --timeout ${GUNICORN_TIMEOUT:-30} \  # Reduced timeout
-    --keep-alive 5 \
-    --max-requests 1000 \
-    --max-requests-jitter 50 \
-    --log-level info \
-    sopchatbot.wsgi:application
+# Start the Django app
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "sopchatbot.wsgi:application"]
