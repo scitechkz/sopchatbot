@@ -1,14 +1,17 @@
 from pathlib import Path
 import os
+import sys
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # Load environment variables from .env file
 load_dotenv()
 
 # OpenAI Client Initialization
-import openai
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-openai_client = openai.Client(api_key=OPENAI_API_KEY)
+
+# Skip OpenAI init during collectstatic (avoid missing API key)
+if 'collectstatic' not in sys.argv:
+    openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
