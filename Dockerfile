@@ -13,3 +13,5 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 # Start the Django app
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "sopchatbot.wsgi:application"]
+
+
