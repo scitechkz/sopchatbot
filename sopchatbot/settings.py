@@ -6,11 +6,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # OpenAI Client Initialization
+import openai
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+openai_client = openai.Client(api_key=OPENAI_API_KEY)
 
-# OpenAI Client Initialization
-
-    #end of open AI configuration
-    
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -39,13 +38,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Ensure Whitenoise is included here
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'sopchatbot.urls'
@@ -74,7 +73,6 @@ DATABASES = {
     'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
 }
 
-
 # Password Validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -98,9 +96,11 @@ USE_I18N = True
 USE_TZ = True
 
 # Static Files (CSS, JavaScript, Images)
-STATIC_URL = "/static/"
-STATIC_ROOT = '/app/static'
-#STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_URL = "/static/"  # URL to access static files in the browser
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Directory for collectstatic (production)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),  # Additional directory for static files during development
+]
 
 # Media Files
 MEDIA_URL = "/media/"
@@ -111,11 +111,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Model
 AUTH_USER_MODEL = "sop.CustomUser"
-
-# Skip collectstatic if DISABLE_COLLECTSTATIC is set
-if os.getenv('DISABLE_COLLECTSTATIC'):
-    STATICFILES_DIRS = []
-    
-import openai
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-openai_client = openai.Client(api_key=OPENAI_API_KEY)
