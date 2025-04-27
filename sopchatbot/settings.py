@@ -3,31 +3,30 @@ import os
 import sys
 from dotenv import load_dotenv
 from openai import OpenAI
+import dj_database_url
 
 # Load environment variables from .env file
 load_dotenv()
 
-# OpenAI Client Initialization
+# BASE_DIR setup
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# OpenAI Client Initialization (avoid during 'collectstatic')
 if 'collectstatic' not in sys.argv:
-    openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# DEBUG setting
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-# Add media file support
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-DEBUG = True
+# Allowed Hosts
 ALLOWED_HOSTS = ['sopchatbot.onrender.com', 'localhost', '127.0.0.1']
 
+# CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
-    'https://sopchatbot.onrender.com',  # Add your domain here
+    'https://sopchatbot.onrender.com',
 ]
 
 # Application definition
@@ -43,7 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Ensure Whitenoise is included here
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,7 +56,7 @@ ROOT_URLCONF = 'sopchatbot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        "DIRS": [os.path.join(BASE_DIR, "sop/templates")],  # Ensures Django can find the templates
+        "DIRS": [os.path.join(BASE_DIR, "sop/templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,26 +71,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sopchatbot.wsgi.application'
 
-# Database Configuration
-import dj_database_url
-DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
-}
+# Database setup
+if DEBUG:
+    # Use SQLite for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    # Use Render's Postgres database
+    DATABASES = {
+        'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    }
 
-# Password Validation
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Internationalization
@@ -100,23 +100,19 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static Files (CSS, JavaScript, Images)
-STATIC_URL = "/static/"  # URL to access static files in the browser
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Directory for collectstatic (production)
-# WhiteNoise Storage (used for serving static files in production)
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),  # Additional directory for static files during development
-]
-
-
-# Media Files
+# Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# Default Primary Key Field Type
+# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Model
