@@ -99,9 +99,14 @@ USE_TZ = True
 # Static Files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"  # URL to access static files in the browser
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Directory for collectstatic (production)
+# WhiteNoise Storage (used for serving static files in production)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),  # Additional directory for static files during development
 ]
+
 
 # Media Files
 MEDIA_URL = "/media/"
