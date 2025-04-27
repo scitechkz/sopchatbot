@@ -6,7 +6,7 @@ services:
     dockerfilePath: ./Dockerfile
     dockerContext: .
     buildCommand: ""  # leave empty to skip collectstatic during build
-    startCommand: gunicorn sopchatbot.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120
+    startCommand: gunicorn sopchatbot.wsgi:application --bind 0.0.0.0:8000 --workers 1 --timeout 600
     envVars:
       - key: OPENAI_API_KEY
         sync: false

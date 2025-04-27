@@ -101,6 +101,8 @@ USE_TZ = True
 # Static Files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"  # URL to access static files in the browser
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Directory for collectstatic (production)
+#STATIC_ROOT = "/app/staticfiles/"
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),  # Additional directory for static files during development
 ]
