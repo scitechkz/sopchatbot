@@ -29,5 +29,5 @@ COPY . /app/
 EXPOSE 8000
 
 # Run Gunicorn, using $PORT environment variable
-CMD ["gunicorn", "sopchatbot.wsgi:application", "--bind", "0.0.0.0:$PORT", "--workers", "3", "--timeout", "120"]
+CMD gunicorn sopchatbot.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120
 
