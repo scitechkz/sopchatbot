@@ -19,8 +19,8 @@ if 'collectstatic' not in sys.argv:
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # DEBUG setting
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-
+#DEBUG = os.getenv('DEBUG', 'False').lower() == 'true' #use this line if you want to set DEBUG from .env
+DEBUG = True  # Set to False in production
 # Allowed Hosts
 ALLOWED_HOSTS = ['sopchatbot.onrender.com', 'localhost', '127.0.0.1']
 
