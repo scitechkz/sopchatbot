@@ -8,8 +8,6 @@ from openai import OpenAI
 load_dotenv()
 
 # OpenAI Client Initialization
-
-# Skip OpenAI init during collectstatic (avoid missing API key)
 if 'collectstatic' not in sys.argv:
     openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
@@ -26,7 +24,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-#ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 ALLOWED_HOSTS = ['sopchatbot.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
@@ -102,8 +99,6 @@ USE_TZ = True
 # Static Files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"  # URL to access static files in the browser
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Directory for collectstatic (production)
-#STATIC_ROOT = "/app/staticfiles/"
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),  # Additional directory for static files during development
 ]
