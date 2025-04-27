@@ -47,3 +47,4 @@ class SOPAnalytics(models.Model):
         return f"{self.user} - {self.query[:50]} - {self.response_time}s"
 
 
+# ✅ SOP Feedback - FIXED
