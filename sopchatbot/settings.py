@@ -26,6 +26,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEBUG = True
 ALLOWED_HOSTS = ['sopchatbot.onrender.com', 'localhost', '127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://sopchatbot.onrender.com',  # Add your domain here
+]
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
