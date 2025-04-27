@@ -6,7 +6,7 @@ services:
     dockerfilePath: ./Dockerfile
     dockerContext: .
     buildCommand: ""  # leave empty to skip collectstatic during build
-    startCommand: gunicorn sopchatbot.wsgi:application --bind 0.0.0.0:8000
+    startCommand: gunicorn sopchatbot.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: OPENAI_API_KEY
         sync: false
@@ -14,3 +14,4 @@ services:
         sync: false
     postDeploy:
       - python manage.py collectstatic --noinput
+      - python manage.py migrate --noinput
