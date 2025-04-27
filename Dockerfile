@@ -23,7 +23,7 @@ COPY . /app/
 
 # (Optional) Don't collect static files inside the Dockerfile
 # Instead, let Render run collectstatic in postDeploy
-# RUN python manage.py collectstatic --noinput --clear || echo "Static collection failed"
+RUN python manage.py collectstatic --noinput --clear || echo "Static collection failed"
 
 # Expose the port (Render automatically sets $PORT)
 EXPOSE 8000
