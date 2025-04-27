@@ -22,8 +22,8 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-
+#DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = True
 ALLOWED_HOSTS = ['sopchatbot.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
