@@ -22,6 +22,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'true').lower() == 'true' #use this line if you want to set DEBUG from .env
 
 # Allowed Hosts
+
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 # CSRF Trusted Origins
