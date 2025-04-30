@@ -19,15 +19,14 @@ if 'collectstatic' not in sys.argv:
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # DEBUG setting
-#DEBUG = os.getenv('DEBUG', 'False').lower() == 'true' #use this line if you want to set DEBUG from .env
-DEBUG = True  # Set to False in production
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true' #use this line if you want to set DEBUG from .env
+
 # Allowed Hosts
-ALLOWED_HOSTS = ['sopchatbot.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 # CSRF Trusted Origins
-CSRF_TRUSTED_ORIGINS = [
-    'https://sopchatbot.onrender.com',
-]
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000').split(',')
+# CSRF_TRUSTED_ORIGINS for production (if not set in .env)
 
 # Application definition
 INSTALLED_APPS = [
@@ -72,19 +71,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'sopchatbot.wsgi.application'
 
 # Database setup
-if DEBUG:
+ 
     # Use SQLite for local development
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+   # Default SQLite database (for local development)
+   
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+## Use Render's Postgres database if DATABASE_URL is set
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    DATABASES['default'] = dj_database_url.parse(database_url, conn_max_age=600)
 else:
-    # Use Render's Postgres database
-    DATABASES = {
-        'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
-    }
+    # Raise an error if DATABASE_URL is missing on Render
+    if not DEBUG:
+        raise Exception("DATABASE_URL is not set. Please configure it in your environment variables.")
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
