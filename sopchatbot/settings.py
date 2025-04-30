@@ -19,7 +19,7 @@ if 'collectstatic' not in sys.argv:
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # DEBUG setting
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true' #use this line if you want to set DEBUG from .env
+DEBUG = os.getenv('DEBUG', 'true').lower() == 'true' #use this line if you want to set DEBUG from .env
 
 # Allowed Hosts
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
